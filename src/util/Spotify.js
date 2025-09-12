@@ -45,10 +45,10 @@ const Spotify = {
   // Search for tracks matching the provided term
   search(term) {
     if (!term) return Promise.resolve([]);
-    const token = this.getAccessToken();
+    const accessToken = this.getAccessToken();
     const endpoint = `https://api.spotify.com/v1/search?type=track&q=${encodeURIComponent(term)}`;
     return fetch(endpoint, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${accessToken}` }
     })
       .then(res => {
         if (!res.ok) throw new Error(`Spotify search failed: ${res.status}`);
