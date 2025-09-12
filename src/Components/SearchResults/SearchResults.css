@@ -8,18 +8,12 @@
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-elev);
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 @media only screen and (max-width: 1020px) {
   .SearchResults { width: 90%; margin-bottom: 2rem; }
-}
-.SearchResults {
-  width: 50%;
-  height: 950px;
-  overflow-y: scroll;
-  padding: .88rem;
-  background-color: rgba(1, 12, 63, 0.7);
-  box-shadow: 0 4px 2px 2px #000000;
 }
 
 .SearchResults h2 { margin-top:0; }
@@ -28,4 +22,12 @@
 
 @media only screen and (max-width: 1020px) {
   .SearchResults { width: 90%; margin-bottom: 2rem; }
+}
+
+/* Ensure the list fills the panel and then scrolls inside the panel */
+.SearchResults .TrackList {
+  flex: 1 1 auto;
+  min-height: 0;            /* allow flex child to shrink for scrolling */
+  max-height: none;         /* override TrackList's fixed cap */
+  overflow-y: auto;         /* scroll the list when needed */
 }
