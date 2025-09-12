@@ -47,7 +47,7 @@ class App extends React.Component {
 		const trackURIs = this.state.playlistTracks.map(t => t.uri);
 		Spotify.savePlaylist(this.state.playlistName, trackURIs)
 			.then(() => {
-				// Reset playlist after successful (or attempted) save user-id step
+				// Clear the current playlist after a successful save so the user can start a new one
 				this.setState({ playlistName: 'New Playlist', playlistTracks: [] });
 			});
 	}

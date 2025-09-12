@@ -1,4 +1,15 @@
-// Spotify utility module
+// Spotify utility (Authorization Code with PKCE)
+// Summary:
+// - Starts PKCE auth by generating a code_verifier and code_challenge, then redirects to Spotify authorize.
+// - On redirect back with a code, exchanges code+verifier via our local backend (/api/token) for an access token.
+// - Caches token with expiry and exposes search() and savePlaylist() helpers.
+// Endpoints used:
+// - GET https://accounts.spotify.com/authorize (front-end redirect)
+// - POST http://127.0.0.1:5000/api/token (local exchange → Spotify /api/token)
+// - GET https://api.spotify.com/v1/search?type=track&q={term}
+// - GET https://api.spotify.com/v1/me
+// - POST https://api.spotify.com/v1/users/{userId}/playlists
+// - POST https://api.spotify.com/v1/users/{userId}/playlists/{playlistId}/tracks
 // Variable to hold the access token
 let accessToken;
 let tokenExpirationTime = 0; // epoch ms when token expires
@@ -121,7 +132,7 @@ const Spotify = {
   },
   // Save a playlist (now includes user ID fetch + playlist creation).
   async savePlaylist(name, trackUris) {
-    // Step 90: validate inputs
+  // Validate inputs and abort when required data is missing
     if (!name || !trackUris || trackUris.length === 0) return;
 
     // Setup variables

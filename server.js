@@ -1,5 +1,10 @@
 // Minimal PKCE token exchange server for Spotify Authorization Code with PKCE
-// NOTE: For real deployment secure client secret handling and HTTPS.
+// What it does:
+// - Accepts POST /api/token with { code, code_verifier } from the front-end after Spotify redirects back.
+// - Exchanges these for tokens by calling https://accounts.spotify.com/api/token.
+// - Returns the JSON token payload (access_token, expires_in, refresh_token when applicable).
+// Notes:
+// - For production, secure client secret handling, restrict origins, and use HTTPS.
 const express = require('express');
 const cors = require('cors');
 
