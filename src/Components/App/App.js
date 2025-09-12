@@ -3,6 +3,7 @@ import './App.css';
 import SearchBar from '../SearchBar/SearchBar';
 import SearchResults from '../SearchResults/SearchResults';
 import Playlist from '../Playlist/Playlist';
+import Spotify from '../../util/Spotify';
 
 // Temporary mock search data (will be replaced with Spotify API)
 const mockSearch = (term) => {
@@ -51,11 +52,11 @@ class App extends React.Component {
 		this.setState({ searchResults: results.filter(r => !playlistIds.has(r.id)) });
 	}
 
-	// Curriculum step 67: placeholder search method to be wired to Spotify API later
+	// Search via Spotify API utility
 	search(term) {
+		if (!term) return;
 		console.log('Search term entered:', term);
-		// For now reuse local mock search logic to give user feedback
-		this.handleSearch(term);
+		Spotify.search(term).then(tracks => this.setState({ searchResults: tracks || [] }));
 	}
 
 	addTrack(track) {
