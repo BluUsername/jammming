@@ -5,10 +5,8 @@ let tokenExpirationTime = 0; // epoch ms when token expires
 
 // OAuth configuration
 const clientId = '9ddc113def3f479aabc0a06fe739947d'; // Spotify App Client ID
-// Redirect URI (must be registered in Spotify dashboard EXACTLY as produced here)
-// Using dynamic origin so if CRA chooses a different port (e.g., 3001) it still matches.
-// IMPORTANT: Add this exact value (including trailing slash) in your Spotify app settings.
-const redirectUri = window.location.origin + '/';
+// Fixed Redirect URI (Option B) using 127.0.0.1; ensure this exact value (with trailing slash) is registered.
+const redirectUri = 'http://127.0.0.1:3000/';
 const authEndpoint = 'https://accounts.spotify.com/authorize';
 const scopes = ['playlist-modify-public'];
 
