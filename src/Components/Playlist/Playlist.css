@@ -1,0 +1,5 @@
+.Playlist { background:rgba(0,0,0,.65); backdrop-filter:blur(4px); padding:1rem 1.25rem; border-radius:6px; width:48%; }
+.Playlist input { width:100%; padding:.55rem .75rem; margin-bottom:.75rem; border:1px solid #333; background:#111; color:#fff; }
+.Playlist-save { background:#6c41ec; border:none; color:#fff; font-weight:600; padding:.65rem 1rem; width:100%; cursor:pointer; }
+.Playlist-save:hover { background:#5832c5; }
+@media (max-width:1020px){ .Playlist { width:100%; } }

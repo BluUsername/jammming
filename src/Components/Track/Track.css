@@ -1,0 +1,5 @@
+.Track { display:flex; justify-content:space-between; align-items:center; padding:.55rem 0; border-bottom:1px solid #2d2d2d; }
+.Track-information h3 { margin:0; font-size:1rem; }
+.Track-information p { margin:0; font-size:.8rem; color:#bbb; }
+.Track-action { background:transparent; border:1px solid #6c41ec; color:#6c41ec; width:32px; height:32px; font-size:1.15rem; line-height:1; cursor:pointer; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+.Track-action:hover { background:#6c41ec; color:#fff; }
