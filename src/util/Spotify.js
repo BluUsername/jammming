@@ -5,40 +5,82 @@ let tokenExpirationTime = 0; // epoch ms when token expires
 
 // OAuth configuration
 const clientId = '9ddc113def3f479aabc0a06fe739947d'; // Spotify App Client ID
-// Fixed Redirect URI (Option B) using 127.0.0.1; ensure this exact value (with trailing slash) is registered.
+// Authorization Code with PKCE configuration
 const redirectUri = 'http://127.0.0.1:3000/';
 const authEndpoint = 'https://accounts.spotify.com/authorize';
 const scopes = ['playlist-modify-public'];
+let codeVerifier; // stored in-memory; also persisted to localStorage
+
+function generateRandomString(length) {
+  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let text = '';
+  for (let i = 0; i < length; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
+}
+
+async function sha256(plain) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(plain);
+  return await window.crypto.subtle.digest('SHA-256', data);
+}
+
+function base64url(buffer) {
+  return btoa(String.fromCharCode(...new Uint8Array(buffer)))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+async function createCodeChallenge(v) {
+  const hashed = await sha256(v);
+  return base64url(hashed);
+}
 
 // Spotify module object
 const Spotify = {
-  getAccessToken() {
-    // If token exists and not expired, return it
-    if (accessToken && Date.now() < tokenExpirationTime) {
-      return accessToken;
+  async getAccessToken() {
+    // Cached and valid
+    if (accessToken && Date.now() < tokenExpirationTime) return accessToken;
+
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const error = params.get('error');
+    if (error) {
+      console.error('Spotify auth error:', error);
+      // Clear query to avoid loops
+      window.history.replaceState({}, document.title, '/');
     }
-
-    // Check URL for access token fragment
-    const url = window.location.href;
-    const accessTokenMatch = url.match(/access_token=([^&]*)/);
-    const expiresInMatch = url.match(/expires_in=([^&]*)/);
-
-    if (accessTokenMatch && expiresInMatch) {
-      accessToken = accessTokenMatch[1];
-      const expiresIn = Number(expiresInMatch[1]);
+    if (code) {
+      // Exchange code for token
+      const storedVerifier = localStorage.getItem('spotify_code_verifier');
+      if (!storedVerifier) {
+        console.error('Missing code_verifier');
+        return;
+      }
+      const resp = await fetch('http://127.0.0.1:5000/api/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, code_verifier: storedVerifier })
+      });
+      const json = await resp.json();
+      if (!resp.ok) {
+        console.error('Token exchange failed', json);
+        return;
+      }
+      accessToken = json.access_token;
+      const expiresIn = json.expires_in || 3600;
       tokenExpirationTime = Date.now() + expiresIn * 1000;
-
-  // Schedule token invalidation when it expires
+      window.history.replaceState({}, document.title, '/');
       window.setTimeout(() => accessToken = '', expiresIn * 1000);
-
-  // Remove token fragment parameters from the URL
-      window.history.pushState('Access Token', null, '/');
-
       return accessToken;
     }
 
-  // No token cached and not present in URL -> start implicit grant redirect
-  const authUrl = `${authEndpoint}?client_id=${clientId}&response_type=token&scope=${encodeURIComponent(scopes.join(' '))}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+    // Begin PKCE auth
+    codeVerifier = generateRandomString(128);
+    localStorage.setItem('spotify_code_verifier', codeVerifier);
+    const codeChallenge = await createCodeChallenge(codeVerifier);
+    const state = generateRandomString(16);
+    const authUrl = `${authEndpoint}?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes.join(' '))}&code_challenge_method=S256&code_challenge=${codeChallenge}&state=${state}`;
     window.location = authUrl;
   }
   ,
