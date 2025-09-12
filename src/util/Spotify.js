@@ -3,11 +3,10 @@
 let accessToken;
 let tokenExpirationTime = 0; // epoch ms when token expires
 
-// Configuration (replace clientId with your own Spotify app client ID)
-const clientId = '9ddc113def3f479aabc0a06fe739947d'; // provided client ID
-// Per step 81: registered redirect URI must match exactly what is set in the Spotify dashboard
-// Ensure you've added: http://127.0.0.1:3000/ as an allowed Redirect URI
-const redirectUri = 'http://127.0.0.1:3000/';
+// OAuth configuration
+const clientId = '9ddc113def3f479aabc0a06fe739947d'; // Spotify App Client ID
+// Redirect URI must exactly match one registered in the Spotify dashboard
+const redirectUri = 'http://localhost:3000/';
 const authEndpoint = 'https://accounts.spotify.com/authorize';
 const scopes = ['playlist-modify-public','playlist-modify-private'];
 
@@ -29,16 +28,16 @@ const Spotify = {
       const expiresIn = Number(expiresInMatch[1]);
       tokenExpirationTime = Date.now() + expiresIn * 1000;
 
-      // Schedule token invalidation per step 80
+  // Schedule token invalidation when it expires
       window.setTimeout(() => accessToken = '', expiresIn * 1000);
 
-      // Clear the parameters from the URL (do not contain token anymore)
+  // Remove token fragment parameters from the URL
       window.history.pushState('Access Token', null, '/');
 
       return accessToken;
     }
 
-  // Third condition (step 81): no token cached and not present in URL -> redirect for implicit grant
+  // No token cached and not present in URL -> start implicit grant redirect
     const authUrl = `${authEndpoint}?client_id=${encodeURIComponent(clientId)}&response_type=token&scope=${encodeURIComponent(scopes.join(' '))}&redirect_uri=${encodeURIComponent(redirectUri)}`;
     window.location = authUrl;
   }
