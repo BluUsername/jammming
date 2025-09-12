@@ -4,8 +4,10 @@ let accessToken;
 let tokenExpirationTime = 0; // epoch ms when token expires
 
 // Configuration (replace clientId with your own Spotify app client ID)
-const clientId = 'YOUR_SPOTIFY_CLIENT_ID'; // TODO: replace
-const redirectUri = window.location.origin + '/'; // assuming root redirect
+const clientId = 'YOUR_SPOTIFY_CLIENT_ID'; // TODO: replace with your registered Spotify App Client ID
+// Per step 81: registered redirect URI must match exactly what is set in the Spotify dashboard
+// Ensure you've added: http://127.0.0.1:3000/ as an allowed Redirect URI
+const redirectUri = 'http://127.0.0.1:3000/';
 const authEndpoint = 'https://accounts.spotify.com/authorize';
 const scopes = ['playlist-modify-public','playlist-modify-private'];
 
@@ -36,7 +38,7 @@ const Spotify = {
       return accessToken;
     }
 
-    // No token — redirect to Spotify authorization
+  // Third condition (step 81): no token cached and not present in URL -> redirect for implicit grant
     const authUrl = `${authEndpoint}?client_id=${encodeURIComponent(clientId)}&response_type=token&scope=${encodeURIComponent(scopes.join(' '))}&redirect_uri=${encodeURIComponent(redirectUri)}`;
     window.location = authUrl;
   }
