@@ -1,3 +1,7 @@
+.TrackList { width:100%; max-height:420px; overflow-y:auto; padding-right:.25rem; }
+.TrackList::-webkit-scrollbar{ width:10px; }
+.TrackList::-webkit-scrollbar-thumb{ background:#272727; border-radius:6px; }
+.TrackList::-webkit-scrollbar-thumb:hover{ background:#313131; }
 .TrackList { width:100%; max-height:420px; overflow-y:auto; }
 .TrackList::-webkit-scrollbar{ width:8px; }
 .TrackList::-webkit-scrollbar-thumb{ background:#333; border-radius:4px; }

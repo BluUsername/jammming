@@ -1,3 +1,37 @@
+h1 {
+	padding: .85rem 0 .9rem;
+	background: linear-gradient(90deg,#121212,#181818,#121212);
+	border-bottom: 1px solid var(--color-border);
+	text-align: center;
+	font-family: 'Poppins', sans-serif;
+	font-size: 2rem;
+	letter-spacing: .5px;
+	color: var(--color-text-primary);
+	margin: 0;
+	position: sticky;
+	top: 0;
+	z-index: 30;
+	box-shadow: 0 2px 4px rgba(0,0,0,.6);
+}
+
+h1 .highlight { color: var(--color-accent); }
+.App {
+	height: 100%;
+	padding: 0 10% 6rem;
+	font-family: var(--font-stack);
+	font-weight: 500;
+	color: var(--color-text-primary);
+	backdrop-filter: blur(6px) saturate(140%);
+}
+
+.App-playlist { 
+	display: flex; 
+	justify-content: space-between; 
+	width: 100%; 
+	gap: 2.5rem;
+	align-items: flex-start;
+	margin-top: 1rem;
+}
 body,
 html,
 #root {
