@@ -22,6 +22,10 @@ const redirectUri = `${window.location.origin}/`;
 const authEndpoint = 'https://accounts.spotify.com/authorize';
 const scopes = ['playlist-modify-public'];
 let codeVerifier; // stored in-memory; also persisted to localStorage
+// Token exchange endpoint (backend)
+// Use an env var in production (e.g., https://your-token-service.example.com/api/token)
+// Fallback to local dev server by default
+const tokenEndpoint = process.env.REACT_APP_TOKEN_ENDPOINT || 'http://127.0.0.1:5000/api/token';
 
 function generateRandomString(length) {
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -69,7 +73,7 @@ const Spotify = {
         console.error('Missing code_verifier');
         return;
       }
-      const resp = await fetch('http://127.0.0.1:5000/api/token', {
+  const resp = await fetch(tokenEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code, code_verifier: storedVerifier })
