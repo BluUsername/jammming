@@ -17,7 +17,8 @@ let tokenExpirationTime = 0; // epoch ms when token expires
 // OAuth configuration
 const clientId = '9ddc113def3f479aabc0a06fe739947d'; // Spotify App Client ID
 // Authorization Code with PKCE configuration
-const redirectUri = 'http://127.0.0.1:3000/';
+// Use current origin so it works locally and on Surge (e.g., https://yourname.surge.sh/)
+const redirectUri = `${window.location.origin}/`;
 const authEndpoint = 'https://accounts.spotify.com/authorize';
 const scopes = ['playlist-modify-public'];
 let codeVerifier; // stored in-memory; also persisted to localStorage
