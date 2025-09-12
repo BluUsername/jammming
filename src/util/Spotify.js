@@ -68,6 +68,31 @@ const Spotify = {
         console.error(err);
         return [];
       });
+  },
+  // Save a playlist (steps 89-92 partial: fetch user ID only).
+  savePlaylist(name, trackUris) {
+    // Step 90: validate inputs
+    if (!name || !trackUris || trackUris.length === 0) return Promise.resolve();
+
+    // Step 91: setup variables
+    const accessToken = this.getAccessToken();
+    const headers = { Authorization: `Bearer ${accessToken}` };
+    let userId;
+
+    // Step 92: get current user id
+    return fetch('https://api.spotify.com/v1/me', { headers })
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to get user id');
+        return res.json();
+      })
+      .then(json => {
+        userId = json.id;
+        // Placeholder: subsequent steps will create playlist & add tracks
+        return userId;
+      })
+      .catch(err => {
+        console.error('savePlaylist (user id fetch) error:', err);
+      });
   }
 };
 

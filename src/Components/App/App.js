@@ -76,11 +76,12 @@ class App extends React.Component {
 	updatePlaylistName(name) { this.setState({ playlistName: name }); }
 
 	savePlaylist() {
-		// Collect track URIs per curriculum requirement
 		const trackURIs = this.state.playlistTracks.map(t => t.uri);
-		console.log('Saving playlist (placeholder):', this.state.playlistName, trackURIs);
-		// Reset only playlist name & tracks (search results remain for continued browsing)
-		this.setState({ playlistName: 'New Playlist', playlistTracks: [] });
+		Spotify.savePlaylist(this.state.playlistName, trackURIs)
+			.then(() => {
+				// Reset playlist after successful (or attempted) save user-id step
+				this.setState({ playlistName: 'New Playlist', playlistTracks: [] });
+			});
 	}
 
 	render() {
