@@ -24,7 +24,12 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			searchResults: [],
+			// Hard-coded initial search results (will be replaced by real Spotify data later)
+			searchResults: [
+				{ id: '101', name: 'Sample Track One', artist: 'Sample Artist A', album: 'Sample Album X', uri: 'spotify:track:101' },
+				{ id: '102', name: 'Sample Track Two', artist: 'Sample Artist B', album: 'Sample Album Y', uri: 'spotify:track:102' },
+				{ id: '103', name: 'Example Song', artist: 'Demo Artist', album: 'Collection Z', uri: 'spotify:track:103' }
+			],
 			playlistName: 'New Playlist',
 			playlistTracks: []
 		};
