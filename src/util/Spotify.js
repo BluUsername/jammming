@@ -101,10 +101,20 @@ const Spotify = {
       })
       .then(json => {
         playlistID = json.id; // store playlist ID for next step (adding tracks)
-        return playlistID;
+        // Add tracks to playlist
+        return fetch(`https://api.spotify.com/v1/users/${userId}/playlists/${playlistID}/tracks`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ uris: trackUris })
+        });
+      })
+      .then(res => {
+        if (!res) return; // safety
+        if (!res.ok) throw new Error('Failed to add tracks to playlist');
+        return res.json();
       })
       .catch(err => {
-        console.error('savePlaylist (user id fetch) error:', err);
+        console.error('savePlaylist error:', err);
       });
   }
 };
