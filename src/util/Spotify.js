@@ -38,7 +38,7 @@ const Spotify = {
     }
 
   // No token cached and not present in URL -> start implicit grant redirect
-  const authUrl = `${authEndpoint}?client_id=${clientId}&response_type=token&scope=playlist-modify-public&redirect_uri=${encodeURIComponent(redirectUri)}`;
+  const authUrl = `${authEndpoint}?client_id=${clientId}&response_type=token&scope=${encodeURIComponent(scopes.join(' '))}&redirect_uri=${encodeURIComponent(redirectUri)}`;
     window.location = authUrl;
   }
   ,
