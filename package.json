@@ -14,9 +14,16 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "server": "node server.js",
+    "dev": "concurrently \"npm run server\" \"npm start\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "express": "^4.19.2",
+    "node-fetch": "^3.3.2"
   },
   "eslintConfig": {
     "extends": [
