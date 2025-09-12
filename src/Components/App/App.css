@@ -50,7 +50,7 @@ h1 {
 	margin:0;
 }
 
-h1 .highlight { color: #6c41ec; }
+h1 .highlight { color: var(--color-accent); }
 
 h2 { font-family: 'Poppins', sans-serif; font-size: 1.55rem; }
 
