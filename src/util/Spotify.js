@@ -8,7 +8,7 @@ const clientId = '9ddc113def3f479aabc0a06fe739947d'; // Spotify App Client ID
 // Redirect URI must exactly match one registered in the Spotify dashboard
 const redirectUri = 'http://localhost:3000/';
 const authEndpoint = 'https://accounts.spotify.com/authorize';
-const scopes = ['playlist-modify-public','playlist-modify-private'];
+const scopes = ['playlist-modify-public'];
 
 // Spotify module object
 const Spotify = {
@@ -38,7 +38,7 @@ const Spotify = {
     }
 
   // No token cached and not present in URL -> start implicit grant redirect
-    const authUrl = `${authEndpoint}?client_id=${encodeURIComponent(clientId)}&response_type=token&scope=${encodeURIComponent(scopes.join(' '))}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+  const authUrl = `${authEndpoint}?client_id=${clientId}&response_type=token&scope=playlist-modify-public&redirect_uri=${encodeURIComponent(redirectUri)}`;
     window.location = authUrl;
   }
 };
