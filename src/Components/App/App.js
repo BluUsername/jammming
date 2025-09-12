@@ -38,6 +38,7 @@ class App extends React.Component {
 			]
 		};
 		this.handleSearch = this.handleSearch.bind(this);
+		this.search = this.search.bind(this);
 		this.addTrack = this.addTrack.bind(this);
 		this.removeTrack = this.removeTrack.bind(this);
 		this.updatePlaylistName = this.updatePlaylistName.bind(this);
@@ -48,6 +49,13 @@ class App extends React.Component {
 		const results = mockSearch(term);
 		const playlistIds = new Set(this.state.playlistTracks.map(t => t.id));
 		this.setState({ searchResults: results.filter(r => !playlistIds.has(r.id)) });
+	}
+
+	// Curriculum step 67: placeholder search method to be wired to Spotify API later
+	search(term) {
+		console.log('Search term entered:', term);
+		// For now reuse local mock search logic to give user feedback
+		this.handleSearch(term);
 	}
 
 	addTrack(track) {
@@ -79,7 +87,7 @@ class App extends React.Component {
 			<div>
 				<h1>Ja<span className="highlight">mmm</span>ing</h1>
 				<div className="App">
-					<SearchBar onSearch={this.handleSearch} />
+					<SearchBar onSearch={this.search} />
 					<div className="App-playlist">
 						<SearchResults
 							results={this.state.searchResults}
