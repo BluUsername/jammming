@@ -30,8 +30,12 @@ class App extends React.Component {
 				{ id: '102', name: 'Sample Track Two', artist: 'Sample Artist B', album: 'Sample Album Y', uri: 'spotify:track:102' },
 				{ id: '103', name: 'Example Song', artist: 'Demo Artist', album: 'Collection Z', uri: 'spotify:track:103' }
 			],
-			playlistName: 'New Playlist',
-			playlistTracks: []
+			playlistName: 'My Starter Playlist',
+			// Hard-coded initial playlist tracks
+			playlistTracks: [
+				{ id: '201', name: 'Starter Song A', artist: 'Playlist Artist 1', album: 'Playlist Album 1', uri: 'spotify:track:201' },
+				{ id: '202', name: 'Starter Song B', artist: 'Playlist Artist 2', album: 'Playlist Album 2', uri: 'spotify:track:202' }
+			]
 		};
 		this.handleSearch = this.handleSearch.bind(this);
 		this.addTrack = this.addTrack.bind(this);
