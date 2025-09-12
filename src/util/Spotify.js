@@ -65,6 +65,14 @@ const Spotify = {
       const json = await resp.json();
       if (!resp.ok) {
         console.error('Token exchange failed', json);
+        // If code_verifier mismatch or code invalid/used, restart PKCE flow cleanly
+        if (json && (json.error === 'invalid_grant' || json.error === 'invalid_request')) {
+          localStorage.removeItem('spotify_code_verifier');
+          // remove code from URL to avoid reuse
+          window.history.replaceState({}, document.title, '/');
+          // restart auth
+          return await this._beginPkceAuth();
+        }
         return;
       }
       accessToken = json.access_token;
@@ -76,6 +84,10 @@ const Spotify = {
     }
 
     // Begin PKCE auth
+    return await this._beginPkceAuth();
+  },
+
+  async _beginPkceAuth() {
     codeVerifier = generateRandomString(128);
     localStorage.setItem('spotify_code_verifier', codeVerifier);
     const codeChallenge = await createCodeChallenge(codeVerifier);
@@ -85,79 +97,68 @@ const Spotify = {
   }
   ,
   // Search for tracks matching the provided term
-  search(term) {
-    if (!term) return Promise.resolve([]);
-    const accessToken = this.getAccessToken();
+  async search(term) {
+    if (!term) return [];
+    const accessToken = await this.getAccessToken();
+    if (!accessToken) return [];
     const endpoint = `https://api.spotify.com/v1/search?type=track&q=${encodeURIComponent(term)}`;
-    return fetch(endpoint, {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    })
-      .then(res => {
-        if (!res.ok) throw new Error(`Spotify search failed: ${res.status}`);
-        return res.json();
-      })
-      .then(json => {
-        if (!json.tracks || !json.tracks.items) return [];
-        return json.tracks.items.map(track => ({
-          id: track.id,
-          name: track.name,
-          artist: track.artists[0].name,
-          album: track.album.name,
-          uri: track.uri
-        }));
-      })
-      .catch(err => {
-        console.error(err);
-        return [];
-      });
+    try {
+      const res = await fetch(endpoint, { headers: { Authorization: `Bearer ${accessToken}` } });
+      if (!res.ok) throw new Error(`Spotify search failed: ${res.status}`);
+      const json = await res.json();
+      if (!json.tracks || !json.tracks.items) return [];
+      return json.tracks.items.map(track => ({
+        id: track.id,
+        name: track.name,
+        artist: track.artists[0].name,
+        album: track.album.name,
+        uri: track.uri
+      }));
+    } catch (err) {
+      console.error(err);
+      return [];
+    }
   },
   // Save a playlist (now includes user ID fetch + playlist creation).
-  savePlaylist(name, trackUris) {
+  async savePlaylist(name, trackUris) {
     // Step 90: validate inputs
-    if (!name || !trackUris || trackUris.length === 0) return Promise.resolve();
+    if (!name || !trackUris || trackUris.length === 0) return;
 
     // Setup variables
-    const accessToken = this.getAccessToken();
+    const accessToken = await this.getAccessToken();
+    if (!accessToken) return;
     const headers = { Authorization: `Bearer ${accessToken}` };
     let userId;
     let playlistID;
 
     // Get current user id
-    return fetch('https://api.spotify.com/v1/me', { headers })
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to get user id');
-        return res.json();
-      })
-      .then(json => {
-        userId = json.id;
-        // Create new playlist for the user
-        return fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name })
-        });
-      })
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to create playlist');
-        return res.json();
-      })
-      .then(json => {
-        playlistID = json.id; // store playlist ID for next step (adding tracks)
-        // Add tracks to playlist
-        return fetch(`https://api.spotify.com/v1/users/${userId}/playlists/${playlistID}/tracks`, {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ uris: trackUris })
-        });
-      })
-      .then(res => {
-        if (!res) return; // safety
-        if (!res.ok) throw new Error('Failed to add tracks to playlist');
-        return res.json();
-      })
-      .catch(err => {
-        console.error('savePlaylist error:', err);
+    try {
+      let res = await fetch('https://api.spotify.com/v1/me', { headers });
+      if (!res.ok) throw new Error('Failed to get user id');
+      let json = await res.json();
+      userId = json.id;
+
+      // Create new playlist for the user
+      res = await fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name })
       });
+      if (!res.ok) throw new Error('Failed to create playlist');
+      json = await res.json();
+      playlistID = json.id;
+
+      // Add tracks to playlist
+      res = await fetch(`https://api.spotify.com/v1/users/${userId}/playlists/${playlistID}/tracks`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uris: trackUris })
+      });
+      if (!res.ok) throw new Error('Failed to add tracks to playlist');
+      return await res.json();
+    } catch (err) {
+      console.error('savePlaylist error:', err);
+    }
   }
 };
 
