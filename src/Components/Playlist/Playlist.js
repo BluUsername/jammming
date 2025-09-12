@@ -13,12 +13,12 @@ class Playlist extends React.Component {
   }
 
   render() {
-  const { playlistName = 'New Playlist', playlistTracks = [], onSave } = this.props;
+  const { playlistName = 'New Playlist', playlistTracks = [] } = this.props;
     return (
       <div className="Playlist">
         <input defaultValue={playlistName} onChange={this.handleNameChange} />
     <TrackList tracks={playlistTracks} onRemove={this.props.onRemove} isRemoval={true} />
-        <button className="Playlist-save" onClick={onSave}>SAVE TO SPOTIFY</button>
+  <button className="Playlist-save" onClick={this.props.onSave}>SAVE TO SPOTIFY</button>
       </div>
     );
   }
