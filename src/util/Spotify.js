@@ -69,17 +69,18 @@ const Spotify = {
         return [];
       });
   },
-  // Save a playlist (steps 89-92 partial: fetch user ID only).
+  // Save a playlist (now includes user ID fetch + playlist creation).
   savePlaylist(name, trackUris) {
     // Step 90: validate inputs
     if (!name || !trackUris || trackUris.length === 0) return Promise.resolve();
 
-    // Step 91: setup variables
+    // Setup variables
     const accessToken = this.getAccessToken();
     const headers = { Authorization: `Bearer ${accessToken}` };
     let userId;
+    let playlistID;
 
-    // Step 92: get current user id
+    // Get current user id
     return fetch('https://api.spotify.com/v1/me', { headers })
       .then(res => {
         if (!res.ok) throw new Error('Failed to get user id');
@@ -87,8 +88,20 @@ const Spotify = {
       })
       .then(json => {
         userId = json.id;
-        // Placeholder: subsequent steps will create playlist & add tracks
-        return userId;
+        // Create new playlist for the user
+        return fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name })
+        });
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to create playlist');
+        return res.json();
+      })
+      .then(json => {
+        playlistID = json.id; // store playlist ID for next step (adding tracks)
+        return playlistID;
       })
       .catch(err => {
         console.error('savePlaylist (user id fetch) error:', err);
