@@ -1,7 +1,6 @@
 // Minimal PKCE token exchange server for Spotify Authorization Code with PKCE
 // NOTE: For real deployment secure client secret handling and HTTPS.
 const express = require('express');
-const fetch = require('node-fetch');
 const cors = require('cors');
 
 const PORT = process.env.PORT || 5000;
