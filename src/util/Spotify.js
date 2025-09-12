@@ -4,7 +4,7 @@ let accessToken;
 let tokenExpirationTime = 0; // epoch ms when token expires
 
 // Configuration (replace clientId with your own Spotify app client ID)
-const clientId = 'YOUR_SPOTIFY_CLIENT_ID'; // TODO: replace with your registered Spotify App Client ID
+const clientId = '9ddc113def3f479aabc0a06fe739947d'; // provided client ID
 // Per step 81: registered redirect URI must match exactly what is set in the Spotify dashboard
 // Ensure you've added: http://127.0.0.1:3000/ as an allowed Redirect URI
 const redirectUri = 'http://127.0.0.1:3000/';
