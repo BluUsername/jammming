@@ -56,12 +56,12 @@ const Spotify = {
       })
       .then(json => {
         if (!json.tracks || !json.tracks.items) return [];
-        return json.tracks.items.map(t => ({
-          id: t.id,
-            name: t.name,
-            artist: (t.artists && t.artists[0] && t.artists[0].name) || 'Unknown Artist',
-            album: t.album ? t.album.name : 'Unknown Album',
-            uri: t.uri
+        return json.tracks.items.map(track => ({
+          id: track.id,
+          name: track.name,
+          artist: track.artists[0].name,
+          album: track.album.name,
+          uri: track.uri
         }));
       })
       .catch(err => {
