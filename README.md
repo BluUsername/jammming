@@ -1,70 +1,82 @@
-# Getting Started with Create React App
+## Jammming — Spotify Playlist Builder
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Search Spotify, curate tracks, and save playlists to your account. Built with React, using Authorization Code with PKCE for secure login, and a tiny serverless function to exchange tokens.
 
-## Available Scripts
+- Live demo: https://jammmingswithme.surge.sh/
+- Token endpoint (Vercel): https://jammming-alpha.vercel.app/api/token
 
-In the project directory, you can run:
+### Features
+- Search tracks by name/artist/album
+- Add/remove tracks to a staging playlist
+- Name your playlist and save to your Spotify account
+- PKCE-based login (no client secret in the browser)
 
-### `npm start`
+### Tech Stack
+- React (Create React App)
+- Spotify Web API — Authorization Code with PKCE
+- Serverless token exchange (Vercel Function)
+- Surge for static hosting
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Screenshots
+Add two screenshots in the repo (or swap these with your own paths):
+- public/og-image.png — social preview
+- Screenshot of the app UI
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Local Setup
+1) Clone and install
 
-### `npm test`
+```powershell
+git clone <your-repo-url>
+cd jammming
+npm install
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+2) Create a Spotify App at https://developer.spotify.com/dashboard
+- Add a Redirect URI: http://127.0.0.1:3000/
 
-### `npm run build`
+3) Configure env
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```powershell
+copy .env.example .env
+# Edit .env and set REACT_APP_TOKEN_ENDPOINT to your dev token server (e.g., http://127.0.0.1:5000/api/token)
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+4) Start dev servers (Express token server + React app)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```powershell
+npm run dev
+```
 
-### `npm run eject`
+Open http://127.0.0.1:3000 and search to trigger login.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Environment Variables
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Frontend (.env):
+- REACT_APP_TOKEN_ENDPOINT: URL to your token exchange endpoint
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Serverless (Vercel Project settings → Environment Variables):
+- SPOTIFY_CLIENT_ID: Your Spotify App Client ID (not a secret)
+- SPOTIFY_REDIRECT_URI: Exact URL including trailing slash (e.g., https://your-surge-domain.surge.sh/)
+- CORS_ORIGIN: Your frontend origin (e.g., https://your-surge-domain.surge.sh)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Deploy
 
-## Learn More
+Static frontend (Surge):
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```powershell
+npm run build
+npx surge ./build your-domain.surge.sh
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Serverless token (Vercel):
+1) Add env vars in Vercel: SPOTIFY_CLIENT_ID, SPOTIFY_REDIRECT_URI, CORS_ORIGIN
+2) Deploy. If using a Production domain, disable Deployment Protection for preflight to pass.
+3) Verify health at GET /api/token (returns { ok: true, envOk: true })
 
-### Code Splitting
+## Security Notes
+- PKCE uses only the client ID in the browser; do not commit client secrets.
+- Do not commit your .env; use .env.example for placeholders.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## License
+MIT — see LICENSE
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
