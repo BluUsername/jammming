@@ -1,82 +1,38 @@
-## Jammming — Spotify Playlist Builder
+## Jammming
 
-Search Spotify, curate tracks, and save playlists to your account. Built with React, using Authorization Code with PKCE for secure login, and a tiny serverless function to exchange tokens.
+Jammming is a web app for building Spotify playlists. It offers fast track search, a focused staging area for curation, and one‑click saving to the user’s Spotify account. The authentication flow uses OAuth 2.0 Authorization Code with PKCE to keep credentials out of the browser and avoid storing client secrets in the frontend.
 
-- Live demo: https://jammmingswithme.surge.sh/
-- Token endpoint (Vercel): https://jammming-alpha.vercel.app/api/token
+Live site: https://jammmingswithme.surge.sh/
 
-### Features
-- Search tracks by name/artist/album
-- Add/remove tracks to a staging playlist
-- Name your playlist and save to your Spotify account
-- PKCE-based login (no client secret in the browser)
+### What it does
+- Searches the Spotify catalog by track, artist, or album
+- Lets users assemble and refine a temporary track list
+- Saves the list to Spotify as a new playlist under the user’s account
 
-### Tech Stack
+### Architecture at a glance
+- Client: React single‑page application responsible for search, playlist state, and user interactions
+- Auth: Authorization Code with PKCE; the browser generates a code challenge and completes sign‑in with Spotify
+- Token exchange: A minimal serverless endpoint on Vercel handles the authorization code exchange and CORS, returning short‑lived access tokens to the client
+- Hosting: Static frontend on Surge; token API on Vercel Functions
+
+This separation keeps the client secret off the client entirely while preserving a lightweight footprint—no full backend is required.
+
+### Technology
 - React (Create React App)
-- Spotify Web API — Authorization Code with PKCE
-- Serverless token exchange (Vercel Function)
-- Surge for static hosting
+- Spotify Web API
+- OAuth 2.0 Authorization Code with PKCE
+- Vercel Functions (token exchange)
+- Surge (static hosting)
 
-## Screenshots
-Add two screenshots in the repo (or swap these with your own paths):
-- public/og-image.png — social preview
-- Screenshot of the app UI
+### Security and privacy
+- PKCE is used exclusively; no client secrets are embedded in the browser
+- Scopes are limited to playlist creation and modification
+- Responses from the token endpoint are short‑lived and marked non‑cacheable
 
-## Local Setup
-1) Clone and install
+### Preview
+- A social preview image is included at `public/og-image.png`
+- Additional UI screenshots may be added to showcase the search and playlist screens
 
-```powershell
-git clone <your-repo-url>
-cd jammming
-npm install
-```
-
-2) Create a Spotify App at https://developer.spotify.com/dashboard
-- Add a Redirect URI: http://127.0.0.1:3000/
-
-3) Configure env
-
-```powershell
-copy .env.example .env
-# Edit .env and set REACT_APP_TOKEN_ENDPOINT to your dev token server (e.g., http://127.0.0.1:5000/api/token)
-```
-
-4) Start dev servers (Express token server + React app)
-
-```powershell
-npm run dev
-```
-
-Open http://127.0.0.1:3000 and search to trigger login.
-
-## Environment Variables
-
-Frontend (.env):
-- REACT_APP_TOKEN_ENDPOINT: URL to your token exchange endpoint
-
-Serverless (Vercel Project settings → Environment Variables):
-- SPOTIFY_CLIENT_ID: Your Spotify App Client ID (not a secret)
-- SPOTIFY_REDIRECT_URI: Exact URL including trailing slash (e.g., https://your-surge-domain.surge.sh/)
-- CORS_ORIGIN: Your frontend origin (e.g., https://your-surge-domain.surge.sh)
-
-## Deploy
-
-Static frontend (Surge):
-
-```powershell
-npm run build
-npx surge ./build your-domain.surge.sh
-```
-
-Serverless token (Vercel):
-1) Add env vars in Vercel: SPOTIFY_CLIENT_ID, SPOTIFY_REDIRECT_URI, CORS_ORIGIN
-2) Deploy. If using a Production domain, disable Deployment Protection for preflight to pass.
-3) Verify health at GET /api/token (returns { ok: true, envOk: true })
-
-## Security Notes
-- PKCE uses only the client ID in the browser; do not commit client secrets.
-- Do not commit your .env; use .env.example for placeholders.
-
-## License
+### License
 MIT — see LICENSE
 
