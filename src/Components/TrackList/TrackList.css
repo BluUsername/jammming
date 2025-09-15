@@ -14,3 +14,9 @@
 @media only screen and (max-width: 1020px) {
   :not(.SearchResults) > .TrackList { max-height: none; }
 }
+
+/* Spacing between items */
+.Track + .Track { margin-top: .6rem; }
+
+/* Subtle divider for readability */
+.Track { border-bottom: 1px solid rgba(255,255,255,0.08); }

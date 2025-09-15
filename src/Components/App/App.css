@@ -39,6 +39,7 @@ html,
 }
 
 html { font-size: 18px; -webkit-text-size-adjust: 100%; }
+body { -webkit-text-size-adjust: 100%; }
 
 h1 {
 	padding: .77rem 0;
@@ -72,4 +73,10 @@ h2 { font-family: 'Poppins', sans-serif; font-size: 1.55rem; }
 	.App { padding: 0 4% 6rem; }
 	.App-playlist { align-items: stretch; flex-direction: column; gap: 1rem; }
 	h1 { font-size: 1.6rem; }
+	h2 { font-size: 1.25rem; }
+}
+
+/* Very small iPhone widths (Mini/SE) */
+@media only screen and (max-width: 390px) {
+  html { font-size: 16px; }
 }

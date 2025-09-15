@@ -18,6 +18,7 @@
 }
 
 .SearchResults h2 { margin-top:0; }
+.SearchResults h2 { font-size: 1.4rem; line-height: 1.2; margin-bottom: .75rem; }
 
 ::-webkit-scrollbar { width: 0px; background: transparent; }
 
@@ -31,4 +32,5 @@
   min-height: 0;            /* allow flex child to shrink for scrolling */
   max-height: none;         /* override TrackList's fixed cap */
   overflow-y: auto;         /* scroll the list when needed */
+  padding-bottom: .25rem;   /* avoid last item tight to edge */
 }
