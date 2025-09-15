@@ -71,6 +71,15 @@ class App extends React.Component {
 							onSave={this.savePlaylist}
 						/>
 					</div>
+						<footer style={{marginTop: '24px', padding: '16px', textAlign: 'center', color: '#bbb', fontSize: '0.9rem'}}>
+							<span>Created by Tom Herman</span>
+							{' '}•{' '}
+							<a href="mailto:iamtomherman@gmail.com" style={{color:'#9be15d'}}>Contact</a>
+							{' '}
+							<span style={{color:'#666'}}>|</span>
+							{' '}
+							<a href="https://github.com/BluUsername" target="_blank" rel="noreferrer" style={{color:'#9be15d'}}>Github</a>
+						</footer>
 				</div>
 			</div>
 		);
