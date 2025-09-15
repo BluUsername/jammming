@@ -1,7 +1,6 @@
 // Spotify utility (Authorization Code with PKCE)
 // Summary:
-// - Starts PKCE auth by generating a code_verifier and code_challenge, then redirects to Spotify authorize.
-// - On redirect back with a code, exchanges code+verifier via our local backend (/api/token) for an access token.
+// - PKCE auth (generate code_verifier and code_challenge; exchange code via backend /api/token).
 // - Caches token with expiry and exposes search() and savePlaylist() helpers.
 // Endpoints used:
 // - GET https://accounts.spotify.com/authorize (front-end redirect)
@@ -23,8 +22,7 @@ const authEndpoint = 'https://accounts.spotify.com/authorize';
 const scopes = ['playlist-modify-public'];
 let codeVerifier; // stored in-memory; also persisted to localStorage
 // Token exchange endpoint (backend)
-// Use an env var in production (e.g., https://your-token-service.example.com/api/token)
-// Fallback to local dev server by default
+// Use env var in production; fallback to local dev server
 const tokenEndpoint = process.env.REACT_APP_TOKEN_ENDPOINT || 'http://127.0.0.1:5000/api/token';
 
 function generateRandomString(length) {
@@ -65,30 +63,37 @@ const Spotify = {
       console.error('Spotify auth error:', error);
       // Clear query to avoid loops
       window.history.replaceState({}, document.title, '/');
+      return;
     }
     if (code) {
       // Exchange code for token
       const storedVerifier = localStorage.getItem('spotify_code_verifier');
       if (!storedVerifier) {
         console.error('Missing code_verifier');
+        // Stop here so error remains visible; user can retry search to restart PKCE
         return;
       }
-  const resp = await fetch(tokenEndpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, code_verifier: storedVerifier })
-      });
-      const json = await resp.json();
-      if (!resp.ok) {
-        console.error('Token exchange failed', json);
-        // If code_verifier mismatch or code invalid/used, restart PKCE flow cleanly
-        if (json && (json.error === 'invalid_grant' || json.error === 'invalid_request')) {
-          localStorage.removeItem('spotify_code_verifier');
-          // remove code from URL to avoid reuse
+      let json;
+      try {
+        const resp = await fetch(tokenEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code, code_verifier: storedVerifier })
+        });
+        json = await resp.json().catch(() => ({}));
+        if (!resp.ok) {
+          console.error('Token exchange failed', json);
+          // Clear URL to avoid reusing code; do not auto-retry to prevent loops
           window.history.replaceState({}, document.title, '/');
-          // restart auth
-          return await this._beginPkceAuth();
+          if (json && (json.error === 'invalid_grant' || json.error === 'invalid_request')) {
+            localStorage.removeItem('spotify_code_verifier');
+          }
+          return;
         }
+      } catch (e) {
+        console.error('Token exchange request error:', e);
+        // Clear URL and stop; keep error visible
+        window.history.replaceState({}, document.title, '/');
         return;
       }
       accessToken = json.access_token;
