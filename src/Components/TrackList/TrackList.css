@@ -10,3 +10,7 @@
 :not(.SearchResults) > .TrackList {
 	max-height: 420px;
 }
+
+@media only screen and (max-width: 1020px) {
+  :not(.SearchResults) > .TrackList { max-height: none; }
+}

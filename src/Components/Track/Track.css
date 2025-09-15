@@ -1,9 +1,10 @@
 .Track {
 	display: flex;
 	align-items: center;
+	gap: .6rem;
+	min-width: 0; /* allow child text to wrap on iOS */
 	border-bottom: 1px solid #262626;
 	padding: .35rem .4rem .55rem;
-	gap: .75rem;
 	border-radius: 4px;
 	transition: background var(--transition-fast), box-shadow var(--transition-fast);
 }
@@ -11,9 +12,9 @@
 
 .Track-action {
 	cursor: pointer;
-	padding: .55rem .9rem .6rem;
-	font-size: 1.05rem;
-	border: none;
+	padding: .5rem .65rem;
+	font-size: 1rem;
+	border: 0;
 	background: #262626;
 	color: var(--color-text-primary);
 	border-radius: var(--radius-pill);
@@ -22,49 +23,29 @@
 	transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
 }
 .Track-action:hover { background: var(--color-accent); color:#fff; }
-.Track-action:active { transform: scale(.9); }
-
-.Track-information p {
-	font-size: .78rem;
-	font-weight: 400;
-	color: var(--color-text-secondary);
-	letter-spacing: .3px;
-	margin: 0;
-}
-.Track {
-	display: flex;
-	align-items: center;
-	border-bottom: 1px solid rgba(256, 256, 256, 0.8);
-}
-
-.Track-action {
-	cursor: pointer;
-	padding: .5rem;
-	font-size: 1.05rem;
-	transition: color .25s;
-	border: 0px;
-	background-color: rgba(0, 0, 0, 0);
-	color: #fff;
-}
-
-.Track-action:hover {
-	color: rgba(265, 265, 265, .5);
-}
+.Track-action:active { transform: scale(.96); }
 
 .Track-information {
-	flex-grow: 1;
+	flex: 1 1 auto;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	height: 72px;
+	min-width: 0; /* enable text overflow handling */
 }
 
 .Track-information h3 {
-	margin-bottom: .22rem;
+	margin: 0 0 .15rem;
+	font-size: 1rem;
+	line-height: 1.25;
+	word-break: break-word;
 }
 
 .Track-information p {
-	font-size: .83rem;
-	font-weight: 300;
-	color: rgba(256, 256, 256, 0.8);
+	font-size: .9rem;
+	line-height: 1.3;
+	font-weight: 400;
+	color: var(--color-text-secondary);
+	letter-spacing: .2px;
+	margin: 0;
+	word-break: break-word;
 }

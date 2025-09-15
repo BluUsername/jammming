@@ -1,7 +1,7 @@
 .SearchResults {
-  width: 50%;
-  height: 950px;
-  overflow-y: auto;
+  flex: 1 1 50%;
+  min-width: 0;
+  /* Avoid fixed heights; let inner list scroll */
   padding: 1.4rem 1.25rem 2.2rem;
   background: linear-gradient(155deg,var(--color-panel) 0%, var(--color-panel-alt) 70%);
   border: 1px solid var(--color-border);
@@ -10,10 +10,11 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  max-height: 75vh; /* desktop/tablet cap to keep header/footer visible */
 }
 
 @media only screen and (max-width: 1020px) {
-  .SearchResults { width: 90%; margin-bottom: 2rem; }
+  .SearchResults { width: 100%; max-height: none; margin-bottom: 1.25rem; }
 }
 
 .SearchResults h2 { margin-top:0; }
@@ -21,7 +22,7 @@
 ::-webkit-scrollbar { width: 0px; background: transparent; }
 
 @media only screen and (max-width: 1020px) {
-  .SearchResults { width: 90%; margin-bottom: 2rem; }
+  .SearchResults { width: 100%; margin-bottom: 1.25rem; }
 }
 
 /* Ensure the list fills the panel and then scrolls inside the panel */
